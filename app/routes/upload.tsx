@@ -6,7 +6,27 @@ import FileUploader from "~/components/FileUploader";
 const Upload = () => {
   const [isProcessing, setProcessing] = useState(false);
   const [statusText, setStatusText] = useState('');
-  const handleSubmit = (event:FormEvent<HTMLFormElement>) => {}
+  const [files, setFiles] = useState<File| null>(null );
+
+  const handleFileSelect=(file:File|null) =>{
+    setFiles(file);
+  }
+
+  const handleSubmit = (event:FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget.closest('form');
+    if(!form) return;
+    const formData = new FormData(form);
+
+    const companyName = formData.get('company-name') as string;
+    const jobTitle = formData.get('job-title') as string;
+    const jobDescription = formData.get('job-description') as string;
+
+    console.log({companyName,jobTitle, jobDescription})
+
+  }
+
+
   return(
   <main className="bg-[url('/images/bg-main.svg')] bg-cover">
     <Navbar />
@@ -27,7 +47,7 @@ const Upload = () => {
                 <label htmlFor="company-name">Company Name</label>
                 <input
                     type="text"
-                    name="companyName"
+                    name="company-name"
                     id="company-name"
                     placeholder="Company Name"
 
@@ -53,7 +73,7 @@ const Upload = () => {
               </div>
               <div className="form-div">
                 <label htmlFor="uploader">upload Resume</label>
-                <FileUploader/>
+                <FileUploader onFileSelect={handleFileSelect} />
               </div>
               <button className="primary-button" type="submit">
                 Analyze Resume
